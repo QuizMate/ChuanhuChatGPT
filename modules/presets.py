@@ -42,7 +42,7 @@ CONCURRENT_COUNT = 100 # 允许同时使用的用户数量
 SIM_K = 5
 INDEX_QUERY_TEMPRATURE = 1.0
 
-CHUANHU_TITLE = i18n("QuizMate 🚀")
+CHUANHU_TITLE = i18n("QuizMate")
 
 CHUANHU_DESCRIPTION = i18n("QuizMate")
 
