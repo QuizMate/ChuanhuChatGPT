@@ -58,14 +58,14 @@
 
 ```shell
 git clone https://github.com/GaiZhenbiao/ChuanhuChatGPT.git
-cd ChuanhuChatGPT
+cdQuizMateChatGPT
 pip install -r requirements.txt
 ```
 
 次に `config_example.json`をコピーして `config.json`にリネームし、そのファイルにAPI-Keyなどの設定を記入する。
 
 ```shell
-python ChuanhuChatbot.py
+pythonQuizMateChatbot.py
 ```
 
 ブラウザのウィンドウが開き、ChatGPTとチャットできるようになります。

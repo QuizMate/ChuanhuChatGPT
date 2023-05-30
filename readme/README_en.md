@@ -59,14 +59,14 @@
 
 ```shell
 git clone https://github.com/GaiZhenbiao/ChuanhuChatGPT.git
-cd ChuanhuChatGPT
+cdQuizMateChatGPT
 pip install -r requirements.txt
 ```
 
 Then make a copy of `config_example.json`, rename it to `config.json`, and then fill in your API-Key and other settings in the file.
 
 ```shell
-python ChuanhuChatbot.py
+pythonQuizMateChatbot.py
 ```
 
 A browser window will open and you will be able to chat with ChatGPT.

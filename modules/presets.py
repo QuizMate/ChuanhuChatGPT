@@ -42,9 +42,9 @@ CONCURRENT_COUNT = 100 # 允许同时使用的用户数量
 SIM_K = 5
 INDEX_QUERY_TEMPRATURE = 1.0
 
-CHUANHU_TITLE = i18n("川虎Chat 🚀")
+CHUANHU_TITLE = i18n("QuizMate 🚀")
 
-CHUANHU_DESCRIPTION = i18n("由Bilibili [土川虎虎虎](https://space.bilibili.com/29125536)、[明昭MZhao](https://space.bilibili.com/24807452) 和 [Keldos](https://github.com/Keldos-Li) 开发<br />访问川虎Chat的 [GitHub项目](https://github.com/GaiZhenbiao/ChuanhuChatGPT) 下载最新版脚本")
+CHUANHU_DESCRIPTION = i18n("QuizMate")
 
 FOOTER = """<div class="versions">{versions}</div>"""
 
@@ -213,8 +213,8 @@ small_and_beautiful_theme = gr.themes.Soft(
         radius_size=gr.themes.sizes.radius_sm,
     ).set(
         # button_primary_background_fill="*primary_500",
-        button_primary_background_fill_dark="*primary_600",
-        # button_primary_background_fill_hover="*primary_400",
+        # button_primary_background_fill_dark="*primary_600",
+        button_primary_background_fill_hover="*primary_400",
         # button_primary_border_color="*primary_500",
         button_primary_border_color_dark="*primary_600",
         button_primary_text_color="wihte",

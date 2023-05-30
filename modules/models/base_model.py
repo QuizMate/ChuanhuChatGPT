@@ -239,7 +239,7 @@ class BaseLLMModel:
                 nodes = query_object.retrieve(query_bundle)
             reference_results = [n.node.text for n in nodes]
             reference_results = add_source_numbers(reference_results, use_source=False)
-            display_append = add_details(reference_results)
+            # display_append = add_details(reference_results)
             display_append = "\n\n" + "".join(display_append)
             real_inputs = (
                 replace_today(PROMPT_TEMPLATE)
