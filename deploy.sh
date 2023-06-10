@@ -15,6 +15,8 @@ AWS_URl="406687643298.dkr.ecr.ap-northeast-2.amazonaws.com/quizmate-chat"
 RELATEST_TIME=$(date '+%Y%m%d%H%M%S')
 IMAGE_NAME=quizmate-chat:$RELATEST_TIME
 
+aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 406687643298.dkr.ecr.ap-northeast-2.amazonaws.com
+
 REMOTE_URL="${AWS_URl}:${RELATEST_TIME}"
 docker build -t $IMAGE_NAME .
 echo "${IMAGE_NAME}"
