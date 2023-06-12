@@ -2,7 +2,7 @@
 import os
 import logging
 import sys
-
+import json
 import gradio as gr
 
 from modules import config
@@ -12,6 +12,15 @@ from modules.presets import *
 from modules.overwrites import *
 from modules.models.models import get_model
 
+from modules.functional import get_core_functions 
+
+functional = get_core_functions()
+
+tutor_prompt_data = ""
+
+file = os.path.join(os.path.dirname(__file__), './configs', 'ai_tutor.json')
+with open(file, 'r') as file:
+    tutor_prompt_data = json.load(file)
 
 gr.Chatbot._postprocess_chat_messages = postprocess_chat_messages
 gr.Chatbot.postprocess = postprocess
@@ -41,7 +50,7 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
     with gr.Row().style(equal_height=True):
         with gr.Column(scale=5):
             with gr.Row():
-                chatbot = gr.Chatbot(label="Chuanhu Chat", elem_id="chuanhu_chatbot").style(height="100%")
+                chatbot = gr.Chatbot(show_label=False, elem_id="chuanhu_chatbot").style(height="100%")
             with gr.Row():
                 with gr.Column(min_width=225, scale=12):
                     user_input = gr.Textbox(
@@ -51,7 +60,7 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
                 with gr.Column(min_width=42, scale=1):
                     submitBtn = gr.Button(value="", variant="primary", elem_id="submit_btn")
                     cancelBtn = gr.Button(value="", variant="secondary", visible=False, elem_id="cancel_btn")
-            with gr.Row():
+            with gr.Row(visible=False):
                 emptyBtn = gr.Button(
                     i18n("🧹 新的对话"), elem_id="empty_btn"
                 )
@@ -64,8 +73,37 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
                     with gr.Column(min_width=20, scale=1):
                         dislikeBtn = gr.Button(i18n("👎"))
 
-        with gr.Column():
-            with gr.Column(min_width=50, scale=1):
+        with gr.Column(scale=2):
+            with gr.Tab(label=i18n("功能区"), elem_id="functional_tab"):
+                with gr.Accordion("上传文件"):
+                    index_files = gr.Files(label=i18n("上传"), type="file")
+                
+                with gr.Accordion("PDF 解析"):
+                    with gr.Row():
+                        for k in functional:
+                            if "Base" not in functional[k]: continue;
+                            functional[k]['Button'] = gr.Button(k, elem_id="action btn")
+                with gr.Accordion("解题和题目理解"):
+                    with gr.Row():
+                        for k in functional:
+                            if "Medium" not in functional[k]: continue;
+                            functional[k]['Button'] = gr.Button(k, elem_id="action btn")
+                with gr.Accordion("AI深度学习"):
+                    with gr.Row():
+                        deep_input_content = gr.Textbox("输入学习内容", elem_id="input_text")
+                        deep_start_study_button = gr.Button("开始学习", elem_id="action btn")
+                    with gr.Row():
+                        for k in functional:
+                            if "Deep" not in functional[k]: continue;
+                            functional[k]['Button'] = gr.Button(k, elem_id="action btn")
+
+            # with gr.Accordion("功能区按钮"):
+            #     with gr.Row():
+            #         for k in functional:
+            #             if "Advanced" not in functional[k]: continue;
+            #             functional[k]['Button'] = gr.Button(k, elem_id="action btn")
+
+            with gr.Column(min_width=50, scale=1, visible=False):
                 with gr.Tab(label=i18n("模型")):
                     keyTxt = gr.Textbox(
                         show_label=True,
@@ -95,8 +133,8 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
                         multiselect=False,
                         value=REPLY_LANGUAGES[0],
                     )
-                    index_files = gr.Files(label=i18n("上传"), type="file")
-                    two_column = gr.Checkbox(label=i18n("双栏pdf"), value=advance_docs["pdf"].get("two_column", False))
+                    # index_files = gr.Files(label=i18n("上传"), type="file")
+                    two_column = gr.Checkbox(label=i18n("双栏pdf"), value=advance_docs["pdf"].get("two_column", False) or False)
                     summarize_btn = gr.Button(i18n("总结"))
                     # TODO: 公式ocr
                     # formula_ocr = gr.Checkbox(label=i18n("识别公式"), value=advance_docs["pdf"].get("formula_ocr", False))
@@ -276,7 +314,8 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
             user_info, user_name = gr.Markdown.update(value=f"", visible=False), ""
         current_model = get_model(model_name = MODELS[DEFAULT_MODEL], access_key = my_api_key)[0]
         current_model.set_user_identifier(user_name)
-        chatbot = gr.Chatbot.update(label=MODELS[DEFAULT_MODEL])
+        # chatbot = gr.Chatbot.update(label=MODELS[DEFAULT_MODEL])
+        chatbot = gr.Chatbot.update(show_label=False)
         return user_info, user_name, current_model, toggle_like_btn_visibility(DEFAULT_MODEL), *current_model.auto_load(), get_history_names(False, user_name), chatbot
     demo.load(create_greeting, inputs=None, outputs=[user_info, user_name, current_model, like_dislike_area, systemPromptTxt, chatbot, historyFileSelectDropdown, chatbot], api_name="load")
     chatgpt_predict_args = dict(
@@ -323,7 +362,6 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
         outputs=[saveFileName, systemPromptTxt, chatbot]
     )
 
-
     # Chatbot
     cancelBtn.click(interrupt, [current_model], [])
 
@@ -335,6 +373,18 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
 
     index_files.change(handle_file_upload, [current_model, index_files, chatbot, language_select_dropdown], [index_files, chatbot, status_display])
     summarize_btn.click(handle_summarize_index, [current_model, index_files, chatbot, language_select_dropdown], [chatbot, status_display])
+    for k in functional:
+        if "Base" not in functional[k] and "Medium" not in functional[k]: continue;
+        functional[k]['TextBox'] = gr.Textbox(value=functional[k]["Prefix"], lines=1, disabled=True, visible=False)
+        functional[k]["Button"].click(fn=transfer_input, inputs=[functional[k]['TextBox']], outputs=[user_question, user_input, submitBtn, cancelBtn], show_progress=True).then(**chatgpt_predict_args, api_name="predict").then(**end_outputing_args)
+
+    # deep_start_study_button.click(fn=transfer_input, inputs=[deep_input_content], outputs=[user_question, user_input, submitBtn, cancelBtn], show_progress=True).then(**chatgpt_predict_args, api_name="predict").then(**end_outputing_args)
+
+    for k in functional:
+        if "Deep" not in functional[k]: continue;
+        functional[k]['TextBox'] = gr.Textbox(value=functional[k]["Prefix"], lines=1, disabled=True, visible=False)
+        functional[k]["Button"].click(fn=transfer_input, inputs=[functional[k]['TextBox']], outputs=[user_question, user_input, submitBtn, cancelBtn], show_progress=True).then(**chatgpt_predict_args, api_name="predict").then(**end_outputing_args)
+
 
     emptyBtn.click(
         reset,
@@ -459,11 +509,11 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
 
 logging.info(
     colorama.Back.GREEN
-    + "\n川虎的温馨提示：访问 http://localhost:7860 查看界面"
+    + "\n温馨提示：访问 http://localhost:7860 查看界面"
     + colorama.Style.RESET_ALL
 )
 # 默认开启本地服务器，默认可以直接从IP访问，默认不创建公开分享链接
-demo.title = i18n("川虎Chat 🚀")
+demo.title = i18n("荃程AI解题")
 
 if __name__ == "__main__":
     reload_javascript()
@@ -471,7 +521,7 @@ if __name__ == "__main__":
         server_name=server_name,
         server_port=server_port,
         share=share,
-        auth=auth_list if authflag else None,
+        # auth=auth_list if authflag else None,
         favicon_path="./assets/favicon.ico",
         inbrowser=not dockerflag, # 禁止在docker下开启inbrowser
     )
