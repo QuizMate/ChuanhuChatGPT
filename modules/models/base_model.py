@@ -19,6 +19,10 @@ import asyncio
 import aiohttp
 from enum import Enum
 
+from modules.functional import get_core_functions 
+
+functional = get_core_functions()
+
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks.manager import BaseCallbackManager
 
@@ -261,7 +265,8 @@ class BaseLLMModel:
         if fake_input:
             chatbot.append((fake_input, ""))
         else:
-            chatbot.append((inputs, ""))
+            title = "占位提问标题"
+            chatbot.append((title, ""))
         if fake_input is not None:
             user_token_count = self.count_token(fake_input)
         else:
@@ -372,19 +377,32 @@ class BaseLLMModel:
         reply_language="中文",
         should_check_token_count=True,
     ):  # repetition_penalty, top_k
-
+        
+        # ----------------------------------------------
         status_text = "开始生成回答……"
         logging.info(
             "输入为：" + colorama.Fore.BLUE + f"{inputs}" + colorama.Style.RESET_ALL
         )
+        # inputs =  "我希望你可以扮演大学的教授, 帮我解析文件中的习题"
+        prompt_title = ""
+        for k in functional:
+            if functional[k]["Prefix"] == inputs:
+                print(k,"functional[k]")
+                prompt_title = k
+                break
+
+        if prompt_title.strip().startswith("/plan"):
+            prompt_title = prompt_title.replace('/plan', '方案:')
+
+        prompt_title = prompt_title if prompt_title else inputs
         if should_check_token_count:
-            yield chatbot + [(inputs, "")], status_text
-        if reply_language == "跟随问题语言（不稳定）":
-            reply_language = "the same language as the question, such as English, 中文, 日本語, Español, Français, or Deutsch."
+            yield chatbot + [(prompt_title, "")], status_text
+        # if reply_language == "跟随问题语言（不稳定）":
+        #     reply_language = "the same language as the question, such as English, 中文, 日本語, Español, Français, or Deutsch."
 
         limited_context, fake_inputs, display_append, inputs, chatbot = self.prepare_inputs(real_inputs=inputs, use_websearch=use_websearch, files=files, reply_language=reply_language, chatbot=chatbot)
-        yield chatbot + [(fake_inputs, "")], status_text
-
+        # ----------------------------------------------
+        yield chatbot + [(prompt_title, "")], status_text
         if (
             self.need_api_key and
             self.api_key is None
@@ -399,14 +417,14 @@ class BaseLLMModel:
                 self.all_token_counts.append(0)
             else:
                 self.history[-2] = construct_user(inputs)
-            yield chatbot + [(inputs, "")], status_text
+            yield chatbot + [(prompt_title, "")], status_text
             return
         elif len(inputs.strip()) == 0:
             status_text = STANDARD_ERROR_MSG + NO_INPUT_MSG
             logging.info(status_text)
             yield chatbot + [(inputs, "")], status_text
             return
-
+        
         if self.single_turn:
             self.history = []
             self.all_token_counts = []
@@ -418,7 +436,7 @@ class BaseLLMModel:
                 iter = self.stream_next_chatbot(
                     inputs,
                     chatbot,
-                    fake_input=fake_inputs,
+                    fake_input=prompt_title,
                     display_append=display_append,
                 )
                 for chatbot, status_text in iter:
@@ -436,7 +454,7 @@ class BaseLLMModel:
             traceback.print_exc()
             status_text = STANDARD_ERROR_MSG + str(e)
             yield chatbot, status_text
-
+        
         if len(self.history) > 1 and self.history[-1]["content"] != inputs:
             logging.info(
                 "回答为："

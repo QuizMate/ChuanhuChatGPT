@@ -18,17 +18,20 @@
     white-space: nowrap;
 }
 #description {
+    display: none;
     text-align: center;
     margin: 32px 0 4px 0;
 }
 
+
 /* gradio的页脚信息 */
 footer {
-    /* display: none !important; */
+    display: none !important;
     margin-top: .2em !important;
     font-size: 85%;
 }
 #footer {
+    display: none !important;
     text-align: center;
 }
 #footer div {
