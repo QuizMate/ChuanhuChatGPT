@@ -24,8 +24,8 @@ echo "${REMOTE_URL}"
 docker tag $IMAGE_NAME $REMOTE_URL
 docker push $REMOTE_URL
 
-#docker QuizMateChat exist, remove it
-docker rm QuizMateChat -f
+#docker QcChatGPTAI exist, remove it
+docker rm QcChatGPTAI -f
 
 
-docker run -d --name QuizMateChat -v /home/ec2-user/workspace/python/ChuanhuChatGPT/history:/app/history -v /home/ec2-user/workspace/python/ChuanhuChatGPT/config.json:/app/config.json -p 7860:7860 $REMOTE_URL
+docker run -d --name QcChatGPTAI -v /home/ec2-user/workspace/python/QcChatGPTAI/history:/app/history -v /home/ec2-user/workspace/python/QcChatGPTAI/config.json:/app/config.json -p 7860:7860 $REMOTE_URL
