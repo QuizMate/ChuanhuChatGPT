@@ -75,6 +75,7 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
 
         with gr.Column(scale=2):
             with gr.Tab(label=i18n("功能区"), elem_id="functional_tab"):
+                
                 with gr.Accordion("上传文件"):
                     index_files = gr.Files(label=i18n("上传"), type="file")
                 
@@ -89,9 +90,14 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
                             if "Medium" not in functional[k]: continue;
                             functional[k]['Button'] = gr.Button(k, elem_id="action btn")
                 with gr.Accordion("AI深度学习"):
-                    with gr.Row():
-                        deep_input_content = gr.Textbox("输入学习内容", elem_id="input_text")
-                        deep_start_study_button = gr.Button("开始学习", elem_id="action btn")
+                    # with gr.Row():
+                    #     with gr.Column(min_width=175, scale=8):
+                    #         user_deep_input = gr.Textbox(
+                    #             elem_id="user_input_tb",
+                    #             show_label=False, placeholder=i18n("在这里输入"))
+                    #     with gr.Column(min_width=35, scale=4):
+                    #         deep_plan_button = gr.Button("确定", elem_id="deep_start_study_button")
+                        # deep_start_study_button = gr.Button("开始学习", elem_id="action btn")
                     with gr.Row():
                         for k in functional:
                             if "Deep" not in functional[k]: continue;
@@ -378,7 +384,7 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
         functional[k]['TextBox'] = gr.Textbox(value=functional[k]["Prefix"], lines=1, disabled=True, visible=False)
         functional[k]["Button"].click(fn=transfer_input, inputs=[functional[k]['TextBox']], outputs=[user_question, user_input, submitBtn, cancelBtn], show_progress=True).then(**chatgpt_predict_args, api_name="predict").then(**end_outputing_args)
 
-    # deep_start_study_button.click(fn=transfer_input, inputs=[deep_input_content], outputs=[user_question, user_input, submitBtn, cancelBtn], show_progress=True).then(**chatgpt_predict_args, api_name="predict").then(**end_outputing_args)
+    # deep_plan_button.click(fn=transfer_input, inputs=[user_deep_input], outputs=[user_question, user_input, submitBtn, cancelBtn], show_progress=True).then(**chatgpt_predict_args, api_name="predict").then(**end_outputing_args)
 
     for k in functional:
         if "Deep" not in functional[k]: continue;

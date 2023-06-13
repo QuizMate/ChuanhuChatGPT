@@ -26,23 +26,8 @@ def get_core_functions():
         "Content": "",
         "Base": True
     },
-    # "获取答案和解题步骤": {
-    #     'Prefix':  r"请作为大学教授, 帮我理解这个题目的内容",
-    #     "Content": "",
-    #     "Base": True
-    # },
-    # "解释原因": {
-    #     'Prefix':  r"请作为大学教授, 帮我理解这个题目的内容",
-    #     "Content": "",
-    #     "Base": True
-    # },
-    # "继续": {
-    #     'Prefix':  r"请作为大学教授, 帮我理解这个题目的内容",
-    #     "Content": "",
-    #     "Base": True
-    # },
     "获取答案和解题步骤": {
-        'Prefix':  r"请作为大学教授, 帮我",
+        'Prefix':  r"请作为大学教授, 帮我获取答案和解题步骤",
         "Content": "",
         "Medium": True
     },
@@ -61,12 +46,17 @@ def get_core_functions():
         "Content": "",
         "Deep": True
     },
-    "继续": {
+    "请继续": {
         'Prefix':  r"/continue",
         "Content": "",
         "Deep": True
     },
-    "测试": {
+    "请用中文回复": {
+        'Prefix':  r"/language 中文",
+        "Content": "",
+        "Deep": True
+    },
+    "出题测试": {
         'Prefix':  r"/test",
         "Content": "",
         "Deep": True

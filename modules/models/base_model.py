@@ -386,6 +386,10 @@ class BaseLLMModel:
                 print(k,"functional[k]")
                 prompt_title = k
                 break
+
+        if prompt_title.strip().startswith("/plan"):
+            prompt_title = prompt_title.replace('/plan', '方案:')
+
         prompt_title = prompt_title if prompt_title else inputs
         if should_check_token_count:
             yield chatbot + [(prompt_title, "")], status_text
