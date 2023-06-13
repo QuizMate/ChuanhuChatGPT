@@ -28,4 +28,4 @@ docker push $REMOTE_URL
 docker rm QcChatGPTAI -f
 
 
-docker run -d --name QcChatGPTAI -v /home/ec2-user/workspace/python/QcChatGPTAI/history:/app/history -v /home/ec2-user/workspace/python/QcChatGPTAI/config.json:/app/config.json -p 7860:7860 $REMOTE_URL
+docker run -d --name QcChatGPTAI -v /home/ec2-user/workspace/python/QcChatGPTAI/history:/app/history -v /home/ec2-user/workspace/python/QcChatGPTAI/config.json:/app/config.json -p 7869:7860 $REMOTE_URL
