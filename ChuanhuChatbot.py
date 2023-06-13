@@ -42,6 +42,7 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
     topic = gr.State(i18n("未命名对话历史记录"))
     gr.HTML(title_html)
     with gr.Row():
+        
         status_display = gr.Markdown(get_geoip(), elem_id="status_display")
     with gr.Row(elem_id="float_display"):
         user_info = gr.Markdown(value="getting user info...", elem_id="user_info")
@@ -334,7 +335,7 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
             index_files,
             language_select_dropdown,
         ],
-        # outputs=[chatbot, status_display],
+        outputs=[chatbot, status_display],
         show_progress=True,
     )
 
@@ -376,8 +377,8 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
     submitBtn.click(**transfer_input_args).then(**chatgpt_predict_args, api_name="predict").then(**end_outputing_args)
     submitBtn.click(**get_usage_args)
 
-    # index_files.change(handle_file_upload, [current_model, index_files, chatbot, language_select_dropdown], [index_files, chatbot, status_display])
-    # summarize_btn.click(handle_summarize_index, [current_model, index_files, chatbot, language_select_dropdown], [chatbot, status_display])
+    index_files.change(handle_file_upload, [current_model, index_files, chatbot, language_select_dropdown], [index_files, chatbot, status_display])
+    summarize_btn.click(handle_summarize_index, [current_model, index_files, chatbot, language_select_dropdown], [chatbot, status_display])
     for k in functional:
         if "Base" not in functional[k] and "Medium" not in functional[k]: continue;
         functional[k]['TextBox'] = gr.Textbox(value=functional[k]["Prefix"], lines=1, disabled=True, visible=False)
@@ -394,7 +395,7 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
     emptyBtn.click(
         reset,
         inputs=[current_model],
-        # outputs=[chatbot, status_display],
+        outputs=[chatbot, status_display],
         show_progress=True,
     )
 
@@ -408,7 +409,7 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
             index_files,
             language_select_dropdown,
         ],
-        # [chatbot, status_display],
+        [chatbot, status_display],
         show_progress=True,
     ).then(**end_outputing_args)
     retryBtn.click(**get_usage_args)
@@ -416,39 +417,39 @@ with gr.Blocks(css=customCSS, theme=small_and_beautiful_theme) as demo:
     delFirstBtn.click(
         delete_first_conversation,
         [current_model],
-        # [status_display],
+        [status_display],
     )
 
     delLastBtn.click(
         delete_last_conversation,
         [current_model, chatbot],
-        # [chatbot, status_display],
+        [chatbot, status_display],
         show_progress=False
     )
 
     likeBtn.click(
         like,
         [current_model],
-        # [status_display],
+        [status_display],
         show_progress=False
     )
 
     dislikeBtn.click(
         dislike,
         [current_model],
-        # [status_display],
+        [status_display],
         show_progress=False
     )
 
     two_column.change(update_doc_config, [two_column], None)
 
     # LLM Models
-    # keyTxt.change(set_key, [current_model, keyTxt], [user_api_key, status_display], api_name="set_key").then(**get_usage_args)
+    keyTxt.change(set_key, [current_model, keyTxt], [user_api_key, status_display], api_name="set_key").then(**get_usage_args)
     keyTxt.submit(**get_usage_args)
     single_turn_checkbox.change(set_single_turn, [current_model, single_turn_checkbox], None)
-    # model_select_dropdown.change(get_model, [model_select_dropdown, lora_select_dropdown, user_api_key, temperature_slider, top_p_slider, systemPromptTxt, user_name], [current_model, status_display, chatbot, lora_select_dropdown], show_progress=True, api_name="get_model")
+    model_select_dropdown.change(get_model, [model_select_dropdown, lora_select_dropdown, user_api_key, temperature_slider, top_p_slider, systemPromptTxt, user_name], [current_model, status_display, chatbot, lora_select_dropdown], show_progress=True, api_name="get_model")
     model_select_dropdown.change(toggle_like_btn_visibility, [model_select_dropdown], [like_dislike_area], show_progress=False)
-    # lora_select_dropdown.change(get_model, [model_select_dropdown, lora_select_dropdown, user_api_key, temperature_slider, top_p_slider, systemPromptTxt, user_name], [current_model, status_display, chatbot], show_progress=True)
+    lora_select_dropdown.change(get_model, [model_select_dropdown, lora_select_dropdown, user_api_key, temperature_slider, top_p_slider, systemPromptTxt, user_name], [current_model, status_display, chatbot], show_progress=True)
 
     # Template
     systemPromptTxt.change(set_system_prompt, [current_model, systemPromptTxt], None)
@@ -523,7 +524,6 @@ demo.title = i18n("荃程AI解题")
 if __name__ == "__main__":
     reload_javascript()
     demo.queue(concurrency_count=CONCURRENT_COUNT).launch(
-        blocked_paths=["config.json"],
         server_name=server_name,
         server_port=server_port,
         share=share,

@@ -14,7 +14,7 @@ from langchain.tools import BaseTool, StructuredTool, Tool, tool
 from langchain.callbacks.stdout import StdOutCallbackHandler
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks.manager import BaseCallbackManager
-from duckduckgo_search import DDGS
+# from duckduckgo_search import DDGS
 from itertools import islice
 
 from typing import Any, Dict, List, Optional, Union
@@ -95,15 +95,15 @@ class ChuanhuAgent_Client(BaseLLMModel):
 
     def google_search_simple(self, query):
         results = []
-        with DDGS() as ddgs:
-            ddgs_gen = ddgs.text("notes from a dead house", backend="lite")
-            for r in islice(ddgs_gen, 10):
-                results.append({
-                    "title": r["title"],
-                    "link": r["href"],
-                    "snippet": r["body"]
-                })
-        return str(results)
+        # with DDGS() as ddgs:
+        #     ddgs_gen = ddgs.text("notes from a dead house", backend="lite")
+        #     for r in islice(ddgs_gen, 10):
+        #         results.append({
+        #             "title": r["title"],
+        #             "link": r["href"],
+        #             "snippet": r["body"]
+        #         })
+        # return str(results)
 
     def handle_file_upload(self, files, chatbot, language):
         """if the model accepts multi modal input, implement this function"""
